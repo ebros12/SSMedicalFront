@@ -1,0 +1,38 @@
+.imagenes {
+  margin: 1rem;
+  max-width: 26rem;
+  border-radius: 1rem;
+}
+.capturas{
+  width: 20rem;
+  padding: 1rem;
+}
+
+@media (max-width: 480px) {
+  .boxModal{
+    width: 290px!important;
+  }
+  .imgFirma{
+    width: 100%;
+  }
+  .marginInput{
+    margin: 15px;
+  }
+  .text90deg{
+    margin: 1rem !important;
+    width: 0.9rem;
+    white-space: nowrap;
+    left: 2.5rem;
+  }
+  .smOnly{
+    display: block;
+  }
+  .xlOnly{
+    display: none;
+  }
+  .ItemName{
+    margin: 0rem;
+    min-width: 6rem;
+  }
+
+}
