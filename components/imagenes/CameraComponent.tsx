@@ -108,10 +108,10 @@ const CameraComponent = () => {
                 <a key={index} href={photo} target='_blank'><img key={index} src={photo} alt={`Captured photo ${index}`} className='capturas' /></a>
               ))}
           </Grid>
-          <Grid item xs={9} border={'solid 2px'} padding={'1rem'} borderBottom={'none'}>
+          <Grid item xs={8} border={'solid 2px'} padding={'1rem'} borderBottom={'none'}>
             <Typography variant='subtitle1'>Descripción</Typography>
           </Grid>
-          <Grid item xs={9} border={'solid 2px'} padding={'1rem'}>
+          <Grid item xs={8} border={'solid 2px'} padding={'1rem'}>
             <Typography variant='subtitle1'>ESOFAGO</Typography>
             <Typography variant='subtitle2'>Esofago ok</Typography>
 
