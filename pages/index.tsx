@@ -1,10 +1,16 @@
 import { NextPage } from "next";
-import CameraComponent from "../components/imagenes/CameraComponent";
+import Login from "../components/auth/Login";
+import dotenv from 'dotenv';
+dotenv.config();
+
 
 
 const Home:NextPage = () => {
   return (
-        <CameraComponent />
+    
+      <Login />
+ 
+        
   )
 }
 

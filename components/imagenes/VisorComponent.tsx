@@ -4,17 +4,10 @@ import html2canvas from 'html2canvas';
 import { Button, ButtonGroup, Grid, Typography } from '@mui/material';
 import moment from 'moment';
 import axios from 'axios';
-import { useAuthStore, useDashboardStore } from '../hooks';
-import Swal from 'sweetalert2';
-import 'sweetalert2/dist/sweetalert2.min.css';
+import { useDashboardStore } from '../hooks';
+import { toast } from 'react-toastify';
 
-
-const CameraComponent = () => {
-  //manejar variables de entorno
-  const { status, checkAuthToken, rol, user } = useAuthStore();
-
- 
-
+const VisorComponent = () => {
   const [capturedPhotos, setCapturedPhotos] = useState<string[]>([]);
   const [showCanvas, setShowCanvas] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -65,7 +58,7 @@ const guardarData = () => {
 
   const tituloDesc = tituloDescInput.value;
   const desc = DescInput.value;
-  const dataPersona = {nombre,rut,fichaMedica,edad,referidoPor,motivo,premedicacion,tituloDesc,descripcion:desc}
+  const dataPersona = {nombre,rut,fichaMedica,edad,referidoPor,motivo,premedicacion,tituloDesc,desc}
   localStorage.setItem('patientData',JSON.stringify(dataPersona))
   setRecargar(!recargar)
 }
@@ -123,22 +116,18 @@ const borrarDatos = () =>{
       console.log('Fotos guardadas en el servidor:', response.data);
       if(response.data.ok){
         guardarRevision(dataStorage)
+        toast('💯 Guardado Correctamente', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
+        window.location.href = '/home';
 
-          Swal.fire({
-            title: 'Datos Guardados',
-            text: 'Se redirigira al Home',
-            icon: 'success',
-            showCancelButton: false,
-            confirmButtonText: 'Gracias',
-          }).then((result) => {
-            if (result.isConfirmed) {
-              // Se confirma la acción, guardar revisión y redireccionar
-              window.location.href = '/home';
-            }
-          });
-
-        
-      
       }
     } catch (error) {
       console.error('Error al guardar las fotos en el servidor:', error);
@@ -172,56 +161,33 @@ const borrarDatos = () =>{
   };
 
   const generatePDF = async () => {
-    await setImprimir(true)
+    await setImprimir(true);
     const content = document.getElementById('content');
     if (content) {
-     
-      const pdf = new jsPDF();
-      const canvas = await html2canvas(content);
-      const imgData = canvas.toDataURL('image/png');
-      const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save('document.pdf');
-
+      const options = {
+        proxy: process.env.NEXT_PUBLIC_REACT_APP_BASE_URL + '/proxy',
+        useCORS: true,
+      };
+  
+      html2canvas(content, options).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF();
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+  
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save('document.pdf');
+      });
     } else {
       console.error('Elemento con id "content" no encontrado.');
     }
   };
   
+  
+  
 
   return (
     <Grid container justifyContent="center" alignItems="center" spacing={2}>
-      <Grid item xs={12} container>
-        <Grid item xs={9} container  justifyContent="center" alignItems="center" spacing={2}>
-          {showCanvas ? <video ref={videoRef} autoPlay playsInline muted className="imagenes" /> : ''}
-        </Grid>
-        <Grid item xs={3} alignSelf={'center'}>
-        <ButtonGroup orientation="vertical" size="large" aria-label="large button group">
-            <Button onClick={startCamera} color="primary" variant="contained" size='large'>
-              Prender Cámara
-            </Button>
-            <Button onClick={handleHideCanvas} color="primary" size='large'>
-              Apagar Cámara
-            </Button>
-
-            <Button onClick={capturePhoto} color="primary" size='large'>
-              Sacar Foto
-            </Button>
-            <Button onClick={clearPhotos} color="primary" size='large'>
-              Borrar todas las Fotos
-            </Button>
-            
-          </ButtonGroup>
-          <ButtonGroup className='mt-1' orientation="vertical" size="large" aria-label="large button group">
-            <Button size='large' color='success' variant="contained" onClick={agregarDatos}>{datosPac?'Ocultar datos':'Agregar Datos'}</Button>
-            <Button size='large' color='error' variant="contained" onClick={borrarDatos}>Borrar Datos</Button>
-          </ButtonGroup>
-        </Grid>
-        
-      </Grid>
 
       <Grid item xs={12} container justifyContent="center" alignItems="center" spacing={2} mb={2} id="content">
         
@@ -324,7 +290,7 @@ const borrarDatos = () =>{
 
         <Grid item xs={9} padding={'1rem'}>
           <Typography variant="subtitle2" textAlign={'center'}>
-            Dr. (a) {user.name}
+            Dr. (a) JUAN MORENO HERRERA
           </Typography>
         </Grid>
       </Grid>
@@ -332,11 +298,8 @@ const borrarDatos = () =>{
       <Button onClick={generatePDF} color="primary">
         Descargar PDF
       </Button>
-      <Button onClick={savePhotosToServer} color="primary">
-        Guardar Fotos en el Servidor
-      </Button>
     </Grid>
   );
 };
 
-export default CameraComponent;
+export default VisorComponent;
