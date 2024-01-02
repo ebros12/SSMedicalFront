@@ -18,6 +18,34 @@ export const useProcedimientosStore = () => {
         }
     }
 
+    const startObtenerTodosModulos = async () => {
+
+        try {
+
+            const { data } = await procedimientosAPI.post('/obtenerTodosModulos');
+            return data
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    
+    
+    const startObtenerTipoModulo = async () => {
+
+        try {
+
+            const { data } = await procedimientosAPI.post('/obtenerTipoModulo');
+            return data
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+
+
     const startObtenerDoctor = async () => {
 
         try {
@@ -30,7 +58,35 @@ export const useProcedimientosStore = () => {
         }
     }
 
+    
 
+    
+    const startAgregarDoctor = async (doctor) => {
+
+        try {
+
+            const { data } = await procedimientosAPI.post('/agregarDoctor', {doctor});
+            return data
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const startEditarDoctor = async (doctor) => {
+
+        try {
+
+            const { data } = await procedimientosAPI.post('/editarDoctor', {doctor});
+            return data
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    
+    
 
 
 
@@ -40,6 +96,10 @@ export const useProcedimientosStore = () => {
         //*Metodos
 
         startObtenerModulos,
-        startObtenerDoctor
+        startObtenerDoctor,
+        startObtenerTipoModulo,
+        startObtenerTodosModulos,
+        startAgregarDoctor,
+        startEditarDoctor
     }
 }

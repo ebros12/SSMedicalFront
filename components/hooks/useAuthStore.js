@@ -1,31 +1,32 @@
+import {useState, useContext} from  'react'
 import { authAPI } from "../api";
 import { useSelector,useDispatch } from "react-redux";
 import { clearErrorMessage, onLogin, onLogout, onChecking } from '../store/slices/login'
+import { AuthContext } from "../../context";
+import { useRouter } from "next/router";
+
 
 export const useAuthStore = () => {
 
     const { status,user,errorMessage,rol } = useSelector(state => state.login)
     const dispatch = useDispatch();
+    const { loginUser}  = useContext(AuthContext);
+    const router = useRouter()
 
     const startLogin = async({email,password}) => {
+        const isValidLogin = await loginUser(email, password)
         dispatch(onChecking());
-        try{
-            const {data} = await authAPI.post('/login',{email,password});
-            localStorage.setItem('token',data.token)
-            localStorage.setItem('token-init-date',new Date().getTime());
-            const rol = data.rol===""?"public":data.rol;
-            dispatch( onLogin({name:data.usuario, uid:data.id, rol}) );
-            
-              
-        }catch(error){
-           
+        if (!isValidLogin){
             dispatch(onLogout('Credenciales incorrectas'));
 
             setTimeout(() =>{
                 dispatch(clearErrorMessage());
             },100)
-            
+            return;
         }
+
+        //todo bien
+        router.replace('/home')
     }
 
 
@@ -51,6 +52,93 @@ export const useAuthStore = () => {
         dispatch(onLogout())
     }
 
+    const startObtenerUsuarios = async() => {
+        try {
+
+            const { data } = await authAPI.post('/obtenerUsuarios');
+            return data
+
+        } catch (error) {
+            console.log("error", error)
+            dispatch(errorPost('Sin data'));
+            setTimeout(() => {
+                dispatch(clearErrorMessageDash());
+            }, 10)
+
+        }
+    }
+
+    const startCrearUsuario = async(usuario, email, rol, pass) => {
+        try {
+
+            const  data  = await authAPI.post('/crearUsuario',{usuario, email, rol, pass});
+            return data
+
+        } catch (error) {
+            console.log("error", error)
+            return error
+        }
+    }
+
+    const startEditarUsuario = async(usuario, email, rol, pass) => {
+        try {
+
+            const  data  = await authAPI.post('/modificarUsuario',{usuario, email, rol, pass});
+            return data
+
+        } catch (error) {
+            console.log("error", error)
+            return error
+        }
+    }
+
+
+    const startEliminarUsuario = async(email) => {
+        try {
+
+            const  data  = await authAPI.post('/eliminarUsuario',{email});
+            return data
+
+        } catch (error) {
+            console.log("error", error)
+            return error
+        }
+    }
+
+
+    
+    const startObtenerEliminados = async() => {
+        try {
+
+            const  {data}  = await authAPI.post('/obtenerEliminados');
+            return data
+
+        } catch (error) {
+            console.log("error", error)
+            return error
+        }
+    }
+
+    const startAgregarUsuario = async(email) => {
+        try {
+
+            const  data  = await authAPI.post('/agregarUsuario',{email});
+            return data
+
+        } catch (error) {
+            console.log("error", error)
+            return error
+        }
+    }
+
+
+
+    
+
+    
+
+    
+    
 
 
 
@@ -67,6 +155,12 @@ export const useAuthStore = () => {
         //*Metodos
         startLogin,
         checkAuthToken,
-        startLogout
+        startLogout,
+        startObtenerUsuarios,
+        startCrearUsuario,
+        startEditarUsuario,
+        startEliminarUsuario,
+        startObtenerEliminados,
+        startAgregarUsuario
     }
 }

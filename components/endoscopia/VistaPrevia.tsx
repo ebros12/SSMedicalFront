@@ -106,10 +106,18 @@ const savePhotosToServer = async () => {
     }
 
     storedPacienteData.fotos = fotosUrl;
+    // Obtén los elementos de modulos con estado 2 y agrégalos a la propiedad 'desc'
+    const modulosSeleccionados = modulos
+    .filter(item => item.estado && storedPacienteData[item.nombre] !== undefined)
+    .map(item => `<strong>${item.nombre}:</strong><br>${storedPacienteData[item.nombre]}`)
+    .join('<br>');
+  
+  // Combina los elementos de modulos con 'desc'
+  const descWithModulos = storedPacienteData.Desc + '<br>' + modulosSeleccionados + '<br>';
 
     // Asegúrate de que la estructura de datos coincida con la esperada en el servidor
     const objeto = {
-      desc: storedPacienteData.Desc,
+      desc: descWithModulos,
       edad: storedPacienteData.edad,
       fichaMedica: storedPacienteData.fichaMedica,
       motivo: storedPacienteData.motivo,
@@ -153,30 +161,46 @@ const [imprimir, setImprimir] = useState(false)
 const generatePDF = async () => {
   await setImprimir(true);
   const content = document.getElementById('content');
-  
+
+  // Dimensiones personalizadas para el PDF
+  const contentWidth = 1806; // Ancho en puntos
+  const contentHeight = 2258.47; // Alto en puntos
+
   if (content) {
-    // Aumenta la calidad de la imagen generada por html2canvas
-    const canvas = await html2canvas(content, { scale: 2 }); // Puedes ajustar el valor de escala según tus necesidades
+    // Crea un canvas element y obtén su contexto
+    const canvas = document.createElement('canvas');
+    const canvasContext = canvas.getContext('2d');
 
-    // Obtiene las dimensiones del contenido
-    const contentWidth = canvas.width;
-    const contentHeight = canvas.height;
+    // Escala fija para el contenido
+    const scale = 1;
 
-    // Crea un PDF con las dimensiones del contenido
+    // Configura las dimensiones del canvas
+    canvas.width = contentWidth * scale;
+    canvas.height = contentHeight * scale;
+
+    // Dibuja el contenido en el canvas utilizando html2canvas con la escala fija
+    const canvasData = await html2canvas(content, {
+      canvas: canvas,
+      width: contentWidth,
+      height: contentHeight,
+      scale: scale,
+    });
+
+    // Crea un PDF con las dimensiones personalizadas
     const pdf = new jsPDF('p', 'pt', [contentWidth, contentHeight]);
 
     // Convierte el canvas en una imagen de alta calidad
-    const imgData = canvas.toDataURL('image/jpeg', 1.0); // Ajusta el formato y la calidad aquí
+    const imgData = canvasData.toDataURL('image/jpeg', 1.0); // Ajusta el formato y la calidad aquí
 
     // Agrega la imagen al PDF sin aplicar un zoom
     pdf.addImage(imgData, 'JPEG', 0, 0, contentWidth, contentHeight);
 
+    // Guarda el PDF con un nombre de archivo
     pdf.save('document.pdf');
   } else {
     console.error('Elemento con id "content" no encontrado.');
   }
 };
-
 
 
 
@@ -267,7 +291,22 @@ const generatePDF = async () => {
           <Typography variant="h3">Descripción</Typography>
 
         </Grid>
-      <Grid item xs={12} border={'solid 2px'} borderTop={'none'} margin={'0rem 15rem'} >
+        
+        <Grid item xs={12} border={'solid 2px'} borderTop={'none'} margin={'0rem 15rem'} >
+      <Grid container spacing={0} className=''>
+                        
+                        <Grid container spacing={1} className='mb-1'>
+                              <Grid item xs={12}>
+                                  <Typography variant="h3">{storedPacienteData.tituloDesc}</Typography>
+                              </Grid>
+                              <Grid item xs={12}>
+                                  <Typography variant="h5">{storedPacienteData.Desc}</Typography>
+                              </Grid>
+                              <Grid item xs={12}>
+                                  <Divider />
+                              </Grid>
+                        </Grid>                    
+                    </Grid>
           {modulos ? (
             modulos.map((item, index) => (
                 
@@ -292,7 +331,7 @@ const generatePDF = async () => {
           {modulos ? (
             modulos.map((item, index) => (
                 
-                    item.estado=="2"?(        <Grid container spacing={0} className=''>
+                storedPacienteData.modulosData[item.nombre] ?(<Grid container spacing={0} className=''>
                         
                     <Grid item xs={12} className='checkBoxHtml'>
                         <img alt={item.nombre} src={`./img/recursos/check.png`} width={'5%'} />
@@ -311,7 +350,6 @@ const generatePDF = async () => {
             <Typography variant="h5">No se encontraron módulos</Typography>
           }
         </Grid>
-
 
         <Grid item xs={9} padding={'1rem'}>
           <Typography variant="h5" textAlign={'center'}>

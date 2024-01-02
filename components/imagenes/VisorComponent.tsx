@@ -267,7 +267,7 @@ const borrarDatos = () =>{
         </Grid>
         {dataStorage?(<Grid item xs={8} border={'solid 2px'} borderTop={'none'} padding={'1rem'}>
           <Typography variant="subtitle1">{dataStorage.tituloDesc}</Typography>
-          <Typography variant="subtitle2">{dataStorage.descripcion}</Typography>
+          <Typography variant="subtitle2"  dangerouslySetInnerHTML={{ __html: dataStorage.descripcion }}></Typography>
 
           <Typography variant="subtitle2" mt={'1rem'}>
             <img width={'60rem'} src="https://www.pngplay.com/wp-content/uploads/1/Letter-X-PNG-Stock-Photo.png" alt="Test Ureasa" />

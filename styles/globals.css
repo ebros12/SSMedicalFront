@@ -44,6 +44,33 @@ h4{
   background-image: linear-gradient(to bottom, #ffffff, #e0e0e0);
 }
 
+.input-group-text{
+  padding: 0.81rem;
+  font-size: 1.3rem;
+  border-radius: 0.5rem 0 0 0.5rem;
+  border-top: solid #ccc 1px;
+  border-bottom: solid #ccc 1px;
+  border-left: solid #ccc 1px;
+  background-color: #8080801a;
+}
+.input-group{
+  display: block ruby;
+}
+.contenedorB{
+  display: block ruby;
+}
+.btnTabla {
+  padding: 1rem;
+}
+.table{
+  width: 100%;
+}
+
+td {
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  padding-left: 1rem;
+}
 .login-form {
   display: flex;
   flex-direction: column;
@@ -117,13 +144,24 @@ input {
   border-radius: 4px;
   border: 1px solid #ccc;
   font-size: 1rem;
-  width: 100%;
+  width: auto;
 }
 .m-1{
   margin: 1rem;
 }
 .mt-1{
   margin-top: 1rem;
+}
+.mb-2{
+  margin-bottom: 2rem;
+}
+.selects{
+  padding-right: 0rem;
+  margin-right: 2rem;
+  margin-left: 0.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+
 }
 .buttons {
   padding: 0.5rem 1rem;
@@ -207,6 +245,30 @@ input {
 .MuiButtonBase-root.MuiIconButton-root.MuiIconButton-sizeMedium.css-78trlr-MuiButtonBase-root-MuiIconButton-root svg{
   color: #FFCD00;
 }
+
+
+
+
+
+.cuadroEliminados {
+  border-style: dashed;
+  padding: 0.4rem 2rem;
+  border-width: 2px;
+  margin: 0.2rem 0rem;
+  border-color: #00000052;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 @keyframes shake {
   0% { transform: translateX(0); }
   25% { transform: translateX(-0.5rem); }
@@ -215,13 +277,19 @@ input {
   100% { transform: translateX(0); }
 }
 
+/* Resolucion solo pantalla grande */
 @media screen and (min-width: 768px) {
+
+  .espacioContainer{
+    padding: 2rem 14rem
+  }
+
   .container {
     padding: 2rem;
   }
 
   .login-form {
-    padding: 4rem;
+    padding: 1rem 3rem;
   }
 
   h1 {
@@ -234,11 +302,6 @@ input {
     padding: 1rem;
   }
 
-  button {
-    padding: 1rem 2rem;
-    font-size: 1.2rem;
-    margin-top: 2rem;
-  }
 }
 
 @media screen and (max-width: 576px) {
@@ -256,9 +319,4 @@ input {
     padding: 0.5rem;
   }
 
-  button {
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    margin-top: 1rem;
-  }
 }

@@ -23,7 +23,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-
+import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 const drawerWidth = 240;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -124,10 +124,12 @@ export const Layout: React.FC<Props> = ({ children, title }) => {
         return <PeopleIcon />;
       case 'doctores':
         return <LocalHospitalIcon />;
-      case 'opciones':
+      case 'configuracion':
         return <SettingsIcon />;
       case 'admin':
         return <AccountCircleIcon />;
+      case 'logout':
+          return <MeetingRoomIcon />;
       default:
         return null;
     }
@@ -202,7 +204,8 @@ export const Layout: React.FC<Props> = ({ children, title }) => {
           </List>
           <Divider />
           <List>
-            {['opciones', 'admin'].map((text) => (
+            {['configuracion', 'logout'].map((text) => (
+              <a href={`/${text=="logout"?'':text}`} key={text}>
               <ListItem key={text} disablePadding sx={{ display: 'block' }}>
                 <ListItemButton
                   sx={{
@@ -223,6 +226,8 @@ export const Layout: React.FC<Props> = ({ children, title }) => {
                   <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
                 </ListItemButton>
               </ListItem>
+              </a>
+
             ))}
           </List>
         </Drawer>
